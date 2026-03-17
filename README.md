@@ -9,7 +9,7 @@ Ce projet est une application de gestion de tâches complète développée dans 
 * **Backend:** Node.js, Express.js
 * **Base de données:** PostgreSQL
 * **Tests:** Cypress (E2E & API Testing)
-* **Outils:** Git, GitHub, Postman
+* **Outils:** Git, GitHub
 
 ## 🛠️ Installation et Lancement
 
