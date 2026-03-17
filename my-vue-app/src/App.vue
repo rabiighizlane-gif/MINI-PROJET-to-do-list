@@ -1,10 +1,52 @@
+<script setup>
+import TodoCreateButton from './components/TodoCreateButton.vue';
+import TodoEditButton from './components/TodoEditButton.vue';
+import TodoDeleteButton from './components/TodoDeleteButton.vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+const tasks = ref([]);
+const newTaskTitle = ref('');
+const fetchTasks = async () => {
+  try {
+    const response = await axios.get('http://localhost:3000/tasks');
+    tasks.value = response.data;
+  } catch (err) {
+    console.error("Erreur f l-backend:", err);
+  }
+};
+onMounted(fetchTasks);
+const handleAdded = (newObject) => {
+  tasks.value.push(newObject); 
+  newTaskTitle.value = '';     
+};
 
+const handleDeleted = (id) => {
+  tasks.value = tasks.value.filter(t => t.id !== id);
+};
+const selectedDate = ref(new Date().toISOString().split('T')[0]); 
+const handleUpdated = (updatedObject) => {
+  const index = tasks.value.findIndex(t => t.id === updatedObject.id);
+  tasks.value[index] = updatedObject; 
+};
+const toggleStatus = async (task) => {
+  const newStatus = task.status === 'done' ? 'en cours' : 'done';
+  try {
+    await axios.put(`http://localhost:3000/tasks/${task.id}`, {
+      title: task.title,
+      status: newStatus
+    });
+    task.status = newStatus; // Update f l-interface
+  } catch (err) {
+    console.error("Erreur status:", err);
+  }
+};
+</script>
 <template>
   <nav>
     <div class="navbar">
-    <form>
+    <form @submit.prevent>
       <label for="week">Today is :</label>
-      <input type="date" id="week"><br>
+      <input type="date" v-model="selectedDate" id="week"><br>
       <button id="save">enregistrer</button>
       <br>
       <p>organiser votre travaille ici</p>
@@ -18,26 +60,29 @@
   <form class="ajouter">
   <label for="titre">Titre</label>
   <br>
-  <input type="text" id="titre" placeholder="nouvelle tàche">
+  <input type="text" v-model="newTaskTitle" id="titre" placeholder="nouvelle tàche">
          <br>
-      <TodoCreateButton/>
+      <TodoCreateButton :taskTitle="newTaskTitle" :taskDate="selectedDate" @task-added="handleAdded"/>
       </form>
 <br>
 <Ol>
-  <li>Tàche-1
-  <input type="checkbox" id="t1">
+  <li v-for="t in tasks" :key="t.id">
+    <small v-if="t.task_date">
+    <small>(Ajoutée le: {{ new Date(t.task_date).toLocaleDateString() }})</small>
+            </small>
+           <small v-else>
+            (Pas de date définie)
+                </small>
+    {{ t.title }} <input type="checkbox" 
+       :checked="t.status === 'done'" 
+       @change="toggleStatus(t)">
+    
+    <br>
+    
+    <TodoEditButton :task="t" @task-updated="handleUpdated" />
+    <TodoDeleteButton :taskId="t.id" @task-deleted="handleDeleted" />
   </li>
-  <br><TodoEditButton/><TodoDeleteButton/>
-  <li>Tàche-2 <input type="checkbox" id="t2">
-  </li>
-  <br><TodoEditButton/><TodoDeleteButton/>
-  <li>Tàche-3 <input type="checkbox" id="t3">
-  </li>
-  <br><TodoEditButton/><TodoDeleteButton/>
-  <li>Tàche-4 <input type="checkbox" id="t4">
-  </li>
-  <br><TodoEditButton/><TodoDeleteButton/>
-</Ol>
+ </Ol>
 </template>
 <style>
 .navbar{
@@ -50,7 +95,7 @@
   right: 20%;
   display: flex;
   flex-direction: column;
-  gap: 10px; /* Khallwa bin l-3anassir */
+  gap: 10px; 
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 #save{
@@ -103,4 +148,4 @@ border:2px solid #ffffff;
  top:0%;
  left:0%;
   }
-</style>
+ </style>
