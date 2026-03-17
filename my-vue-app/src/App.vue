@@ -47,8 +47,7 @@ const toggleStatus = async (task) => {
     <form @submit.prevent>
       <label for="week">Today is :</label>
       <input type="date" v-model="selectedDate" id="week"><br>
-      <button id="save">enregistrer</button>
-      <br>
+      <p>🙌</p>
       <p>organiser votre travaille ici</p>
     </form>
     </div>
