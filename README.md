@@ -1,5 +1,6 @@
 # MINI-PROJET-to-do-list.
 Ma première application web
+![Aperçu de l'application](./screenshots/interface.png)
 # 📝 To-Do List Full-Stack (Vue.js + Express + PostgreSQL)
 
 Ce projet est une application de gestion de tâches complète développée dans le cadre du **Cycle d'Ingénieur à l'ENSA Tanger**.
@@ -29,3 +30,5 @@ npm run dev
 ## 4. 🧪 Tests avec Cypress
 cd my-vue-app
 npx cypress open
+![Aperçu de l'application](./screenshots/test-front-end.png)
+![Aperçu de l'application](./screenshots/test-backend.png)
